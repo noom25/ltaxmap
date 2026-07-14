@@ -1,0 +1,8 @@
+วิธีอัปเดตเว็บ ltaxmap.netlify.app
+1. เข้า https://app.netlify.com/teams/noom/projects
+2. คลิกที่ไซต์ "ltaxmap" (คลิกชื่อ ไม่ใช่ลากไฟล์ตรงนี้)
+3. คลิกเมนู "Deploys" ด้านบน
+4. ลากทั้งโฟลเดอร์ D:\ltaxmap ไปวางในกล่อง drop
+5. รอจน status ขึ้น "Published" แล้วเช็คเว็บ
+
+หมายเหตุ: ห้ามลากไฟล์ที่หน้า Projects รวม เดี๋ยวมันสร้างไซต์ใหม่แทน
