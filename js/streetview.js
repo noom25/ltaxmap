@@ -15,24 +15,32 @@ function enableStreetViewMode() {
   if (streetViewMode) return;
 
   streetViewMode = true;
-  map.getContainer().style.cursor = 'crosshair';
+  const container = map.getContainer();
+  container.style.cursor = 'crosshair';
 
-  alert("โหมด Street View 🚶\nคลิกจุดบนแผนที่ที่ต้องการดู Street View");
+  alert("โหมด Street View 🚶\nคลิกจุดบนแผนที่ที่ต้องการดู Street View\n(คลิกได้แม้บนแปลงที่ดินหรือถนน)");
   console.log("🚶 Street View mode activated");
 
   streetViewClickHandler = function (e) {
-    const { lat, lng } = e.latlng;
+    // ดักจับ click ตั้งแต่ระดับ capture phase (ก่อนที่ Leaflet Canvas
+    // จะแย่ง event ไปตอนคลิกโดนแปลงที่ดิน/ถนนที่ render ด้วย preferCanvas)
+    e.stopPropagation();
 
-    // สร้าง URL เปิด Google Street View ตรงพิกัดที่คลิก
-    const url = `https://www.google.com/maps?layer=c&cbll=${lat},${lng}&cbp=11,0,0,0,0`;
+    // แปลงตำแหน่งคลิกบนหน้าจอ ให้เป็นพิกัด lat/lng ของแผนที่โดยตรง
+    const latlng = map.mouseEventToLatLng(e);
+
+    const url = `https://www.google.com/maps?layer=c&cbll=${latlng.lat},${latlng.lng}&cbp=11,0,0,0,0`;
 
     window.open(url, '_blank');
-    console.log(`🚶 Opening Street View at: ${lat}, ${lng}`);
+    console.log(`🚶 Opening Street View at: ${latlng.lat}, ${latlng.lng}`);
 
     disableStreetViewMode();
   };
 
-  map.on('click', streetViewClickHandler);
+  // ใช้ addEventListener แบบ native พร้อม capture=true (พารามิเตอร์ตัวสุดท้าย)
+  // แทน map.on('click') เพราะ map.on('click') อยู่ใน bubble phase
+  // ซึ่ง Canvas renderer ของ Leaflet จะ stopPropagation ก่อนถึงเราเสมอ
+  container.addEventListener('click', streetViewClickHandler, true);
 }
 
 function disableStreetViewMode() {
@@ -40,7 +48,7 @@ function disableStreetViewMode() {
   map.getContainer().style.cursor = '';
 
   if (streetViewClickHandler) {
-    map.off('click', streetViewClickHandler);
+    map.getContainer().removeEventListener('click', streetViewClickHandler, true);
     streetViewClickHandler = null;
   }
 }
