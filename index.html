@@ -157,8 +157,15 @@
     <button id="btnSave" class="btn btn-dark btn-sm"><i class="fas fa-save"></i> บันทึก</button>
     <button id="btnDelete" class="btn btn-secondary btn-sm"><i class="fas fa-trash"></i> Reset</button>
     <input type="file" id="importFile" accept=".geojson,.json" style="display:none" />
-    <button id="btnImport" class="btn btn-outline-primary btn-sm"><i class="fas fa-upload"></i> Import</button>
-    <button id="btnExport" class="btn btn-outline-success btn-sm"><i class="fas fa-download"></i> Export</button>
+    <div class="btn-group btn-group-sm me-2">
+      <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-exchange-alt"></i> Import/Export
+      </button>
+      <ul class="dropdown-menu">
+        <li><button id="btnImport" class="dropdown-item"><i class="fas fa-upload me-2"></i>Import</button></li>
+        <li><button id="btnExport" class="dropdown-item"><i class="fas fa-download me-2"></i>Export</button></li>
+      </ul>
+    </div>
     <button id="btnManageLayers" class="btn btn-outline-secondary btn-sm"><i class="fas fa-cog"></i> Config</button>
     <button id="btnLayerConfig" class="btn btn-outline-info btn-sm"><i class="fas fa-bars"></i> Layers</button>
     <button id="btnStreetView" class="btn btn-outline-warning btn-sm"><i class="fas fa-street-view"></i> Street View</button>
