@@ -29,6 +29,29 @@ export default async (req, context) => {
     const today = new Date().toISOString().split("T")[0];
     await store.setJSON(`backup-${today}.geojson`, geojson);
 
+    // ลบ backup เก่าที่เกิน 30 วัน ออกอัตโนมัติ กันข้อมูลสะสมจนหนัก
+    const RETENTION_DAYS = 30;
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - RETENTION_DAYS);
+
+    try {
+      const { blobs } = await store.list({ prefix: "backup-" });
+      for (const blob of blobs) {
+        // ดึงวันที่จากชื่อไฟล์ เช่น "backup-2026-06-01.geojson" -> "2026-06-01"
+        const match = blob.key.match(/^backup-(\d{4}-\d{2}-\d{2})\.geojson$/);
+        if (!match) continue;
+
+        const blobDate = new Date(match[1]);
+        if (blobDate < cutoff) {
+          await store.delete(blob.key);
+          console.log(`🗑️ ลบ backup เก่า: ${blob.key}`);
+        }
+      }
+    } catch (cleanupErr) {
+      // ถ้าลบ backup เก่าไม่สำเร็จ ไม่ต้องทำให้การบันทึกหลักล้มเหลวไปด้วย
+      console.warn("⚠️ ลบ backup เก่าไม่สำเร็จ:", cleanupErr.message);
+    }
+
     return new Response(
       JSON.stringify({
         message: "✅ บันทึกเรียบร้อย",
