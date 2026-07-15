@@ -34,19 +34,13 @@
       left: 0;
       right: 0;
       z-index: 1000;
-      min-height: 60px;
+      height: 60px;
       background: rgba(255, 255, 255, 0.95); 
       backdrop-filter: blur(10px); 
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow-x: auto;
+      white-space: nowrap;
       transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-    
-    .toolbar .toolbar-inner {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
     }
     
     .toolbar.hidden {
@@ -55,14 +49,14 @@
       pointer-events: none;
     }
     
-    /* Leaflet Controls - ขยับตาม toolbar (ความสูงคำนวณอัตโนมัติจาก JS ผ่าน CSS variable) */
+    /* Leaflet Controls - ขยับตาม toolbar */
     .leaflet-top.leaflet-left {
-      top: var(--toolbar-h, 70px);
+      top: 70px;
       transition: top 0.3s ease;
     }
     
     .leaflet-top.leaflet-right {
-      top: var(--toolbar-h, 70px);
+      top: 70px;
       transition: top 0.3s ease;
     }
     
@@ -130,7 +124,7 @@
 </div>
 
 <div class="toolbar bg-white shadow-sm border-bottom" id="toolbar">
-  <div class="toolbar-inner">
+  <div class="d-flex align-items-center h-100 px-2" style="gap: 8px;">
 
     <span class="fw-bold text-primary me-3 d-none d-md-inline"><i class="fas fa-map-marked-alt"></i> จัดการแปลงที่ดิน</span>
     <span class="fw-bold text-primary me-3 d-md-none"><i class="fas fa-map"></i></span>
@@ -163,24 +157,10 @@
     <button id="btnSave" class="btn btn-dark btn-sm"><i class="fas fa-save"></i> บันทึก</button>
     <button id="btnDelete" class="btn btn-secondary btn-sm"><i class="fas fa-trash"></i> Reset</button>
     <input type="file" id="importFile" accept=".geojson,.json" style="display:none" />
-    <div class="btn-group btn-group-sm me-2">
-      <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-exchange-alt"></i> Import/Export
-      </button>
-      <ul class="dropdown-menu">
-        <li><button id="btnImport" class="dropdown-item"><i class="fas fa-upload me-2"></i>Import</button></li>
-        <li><button id="btnExport" class="dropdown-item"><i class="fas fa-download me-2"></i>Export</button></li>
-      </ul>
-    </div>
-    <div class="btn-group btn-group-sm me-2">
-      <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-sliders-h"></i> ตั้งค่า
-      </button>
-      <ul class="dropdown-menu">
-        <li><button id="btnManageLayers" class="dropdown-item"><i class="fas fa-cog me-2"></i>Config</button></li>
-        <li><button id="btnLayerConfig" class="dropdown-item"><i class="fas fa-bars me-2"></i>Layers</button></li>
-      </ul>
-    </div>
+    <button id="btnImport" class="btn btn-outline-primary btn-sm"><i class="fas fa-upload"></i> Import</button>
+    <button id="btnExport" class="btn btn-outline-success btn-sm"><i class="fas fa-download"></i> Export</button>
+    <button id="btnManageLayers" class="btn btn-outline-secondary btn-sm"><i class="fas fa-cog"></i> Config</button>
+    <button id="btnLayerConfig" class="btn btn-outline-info btn-sm"><i class="fas fa-bars"></i> Layers</button>
     <button id="btnStreetView" class="btn btn-outline-warning btn-sm"><i class="fas fa-street-view"></i> Street View</button>
     
 
@@ -283,25 +263,6 @@ function toggleToolbar() {
 }
 
 console.log('✅ Auto-adjust controls ready!');
-
-/**
- * คำนวณความสูงจริงของ toolbar (รองรับกรณี wrap ขึ้น 2-3 บรรทัดตอนจอแคบ)
- * แล้วเซ็ตเป็น CSS variable --toolbar-h ให้ Leaflet controls ขยับตามพอดีเสมอ
- * แก้ปัญหาเดิมที่ hardcode ไว้ที่ 70px ตายตัว ซึ่งใช้ไม่ได้ถ้า toolbar ขึ้น 2 บรรทัด
- */
-function updateToolbarHeight() {
-  if (!isToolbarVisible) return; // ถ้าซ่อนอยู่ ไม่ต้องคำนวณใหม่
-  const h = toolbar.offsetHeight;
-  document.documentElement.style.setProperty('--toolbar-h', (h + 10) + 'px');
-}
-
-window.addEventListener('load', () => setTimeout(updateToolbarHeight, 300));
-window.addEventListener('resize', updateToolbarHeight);
-
-// เผื่อ toolbar เปลี่ยนความสูงเอง (เช่น dropdown เปิด/ปิด, จอหมุน) ให้เช็คซ้ำด้วย ResizeObserver
-if (typeof ResizeObserver !== 'undefined') {
-  new ResizeObserver(updateToolbarHeight).observe(toolbar);
-}
 </script>
 
 </body>
