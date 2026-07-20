@@ -45,7 +45,7 @@ window.toggleExtraFields = function(btn) {
 /**
  * Load vector layer (polygons/lines)
  */
-async function loadVector(url, style, popupBuilder) {
+async function loadVector(url, style, popupBuilder, layerLabel = "เลเยอร์") {
   try {
     const res = await fetch(url, { 
       cache: "no-store",
@@ -93,6 +93,16 @@ async function loadVector(url, style, popupBuilder) {
               fillColor: '#ff6b6b'
             });
           }
+
+          // แสดงข้อมูลใน sidebar ด้านซ้าย (แบบ LandsPublic)
+          if (typeof window.showParcelSidebar === 'function') {
+            try {
+              const center = layer.getBounds ? layer.getBounds().getCenter() : e.latlng;
+              window.showParcelSidebar(feat.properties, layerLabel, center);
+            } catch (err) {
+              window.showParcelSidebar(feat.properties, layerLabel, e.latlng);
+            }
+          }
         });
         
         // Reset on popup close
@@ -122,7 +132,7 @@ async function loadVector(url, style, popupBuilder) {
 /**
  * Load point layer (circle markers)
  */
-async function loadPoints(url, circleStyle) {
+async function loadPoints(url, circleStyle, layerLabel = "Boundary Point") {
   try {
     const res = await fetch(url, { 
       cache: "no-store",
@@ -164,6 +174,11 @@ async function loadPoints(url, circleStyle) {
               fillColor: '#ff6b6b',
               weight: circleStyle.weight + 1
             });
+          }
+
+          // แสดงข้อมูลใน sidebar ด้านซ้าย (แบบ LandsPublic)
+          if (typeof window.showParcelSidebar === 'function') {
+            window.showParcelSidebar(feat.properties, layerLabel, e.latlng);
           }
         });
         
@@ -233,6 +248,16 @@ function onEachParcel(feature, layer) {
         fillOpacity: 0.15,
         fillColor: '#ff6b6b'
       });
+    }
+
+    // แสดงข้อมูลแปลงนี้ใน sidebar ด้านซ้าย (แบบ LandsPublic)
+    if (typeof window.showParcelSidebar === 'function') {
+      try {
+        const center = layer.getBounds().getCenter();
+        window.showParcelSidebar(feature.properties, "Parcel", center);
+      } catch (err) {
+        window.showParcelSidebar(feature.properties, "Parcel", null);
+      }
     }
   });
   
@@ -325,49 +350,49 @@ async function loadAllLayers() {
   await loadParcels();
   
   // Load other layers
-  blockLayer = await loadVector(DATA_BLOCK, STYLES.block);
+  blockLayer = await loadVector(DATA_BLOCK, STYLES.block, null, "Block");
   if (blockLayer) { 
     overlayMaps["Block"] = blockLayer; 
     layersCtl.addOverlay(blockLayer, "Block"); 
   }
   
-  zoneLayer = await loadVector(DATA_ZONE, STYLES.zone);
+  zoneLayer = await loadVector(DATA_ZONE, STYLES.zone, null, "Zone");
   if (zoneLayer) { 
     overlayMaps["Zone"] = zoneLayer; 
     layersCtl.addOverlay(zoneLayer, "Zone"); 
   }
   
-  boundaryLayer = await loadVector(DATA_BOUNDARY, STYLES.boundary);
+  boundaryLayer = await loadVector(DATA_BOUNDARY, STYLES.boundary, null, "Boundary");
   if (boundaryLayer) { 
     overlayMaps["Boundary"] = boundaryLayer; 
     layersCtl.addOverlay(boundaryLayer, "Boundary"); 
   }
   
-  buildingLayer = await loadVector(DATA_BUILDING, STYLES.building);
+  buildingLayer = await loadVector(DATA_BUILDING, STYLES.building, null, "Building");
   if (buildingLayer) { 
     overlayMaps["Building"] = buildingLayer; 
     layersCtl.addOverlay(buildingLayer, "Building"); 
   }
   
-  spkLayer = await loadVector(DATA_SPK, STYLES.spk);
+  spkLayer = await loadVector(DATA_SPK, STYLES.spk, null, "SPK");
   if (spkLayer) { 
     overlayMaps["SPK"] = spkLayer; 
     layersCtl.addOverlay(spkLayer, "SPK"); 
   }
   
-  แปลงชุมชนLayer = await loadVector(DATA_แปลงชุมชน, STYLES.community);
+  แปลงชุมชนLayer = await loadVector(DATA_แปลงชุมชน, STYLES.community, null, "แปลงชุมชน");
   if (แปลงชุมชนLayer) { 
     overlayMaps["แปลงชุมชน"] = แปลงชุมชนLayer; 
     layersCtl.addOverlay(แปลงชุมชนLayer, "แปลงชุมชน"); 
   }
   
-  แปลงเกษตรLayer = await loadVector(DATA_แปลงเกษตร, STYLES.agriculture);
+  แปลงเกษตรLayer = await loadVector(DATA_แปลงเกษตร, STYLES.agriculture, null, "แปลงเกษตร");
   if (แปลงเกษตรLayer) { 
     overlayMaps["แปลงเกษตร"] = แปลงเกษตรLayer; 
     layersCtl.addOverlay(แปลงเกษตรLayer, "แปลงเกษตร"); 
   }
   
-  boundaryPointLayer = await loadPoints(DATA_BPOINT, STYLES.boundaryPoint);
+  boundaryPointLayer = await loadPoints(DATA_BPOINT, STYLES.boundaryPoint, "Boundary Point");
   if (boundaryPointLayer) { 
     overlayMaps["Boundary Point"] = boundaryPointLayer; 
     layersCtl.addOverlay(boundaryPointLayer, "Boundary Point"); 
