@@ -92,7 +92,10 @@ async function handleLoad(request, env) {
 
     return new Response(data, {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+      },
     });
   } catch (err) {
     return jsonResponse({ error: "โหลดข้อมูลล้มเหลว: " + err.message }, 500);
@@ -102,6 +105,9 @@ async function handleLoad(request, env) {
 function jsonResponse(obj, status = 200) {
   return new Response(JSON.stringify(obj), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store",
+    },
   });
 }
