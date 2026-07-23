@@ -1,20 +1,14 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "map",
-  "main": "_worker.js",
-  "compatibility_date": "2026-07-16",
-  "compatibility_flags": ["nodejs_compat"],
-  "assets": {
-    "directory": "public",
-    "binding": "ASSETS"
-  },
-  "kv_namespaces": [
-    {
-      "binding": "PARCEL_KV",
-      "id": "d218db909ead4c1ab31a2a93fa33e7ef"
-    }
-  ],
+  "compatibility_date": "2026-07-22",
   "observability": {
     "enabled": true
-  }
+  },
+  "assets": {
+    "directory": "public"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
 }
