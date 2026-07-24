@@ -138,7 +138,8 @@ ltaxmap-[ชื่อ อบต.]/
 #_worker.js → เพิ่มรหัส อบต. ต่อท้ายในลิสต์ ALLOWED_ABT (และเปลี่ยน PARCEL_KV เป็น KV_BINDING ให้ตรงกับ binding ของ project map)
 #storage.js → เติม ?abt=<รหัสอบต.นั้น> ต่อท้าย /api/save
 #layers.js → เติม ?abt=<รหัสอบต.นั้น> ต่อท้าย /api/load
-##ตัวอย่าง##
+
+##ตัวอย่าง
 #layer# // const savedRes = await fetch('/api/load?abt=lalom', { cache: "no-store" });
 #storage#// เรียก Cloudflare Worker (ต้องระบุ abt เสมอ ไม่งั้น worker จะปฏิเสธด้วย 400)
   const saveUrl = '/api/save?abt=lalom';
