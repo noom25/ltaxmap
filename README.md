@@ -141,6 +141,7 @@ ltaxmap-[ชื่อ อบต.]/
 
 ##ตัวอย่าง
 #layer# // const savedRes = await fetch('/api/load?abt=lalom', { cache: "no-store" });
+##
 #storage#// เรียก Cloudflare Worker (ต้องระบุ abt เสมอ ไม่งั้น worker จะปฏิเสธด้วย 400)
   const saveUrl = '/api/save?abt=lalom';
 
